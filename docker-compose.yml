@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  proxy:
+    restart: always
+    image: nginx:latest
+    networks: 
+      - external_network
+    # Mapping host ports 80 and 443 into the Nginx service directly
+    ports:
+      - 80:80
+    volumes:
+#     - ./nginx/tmp:/var/run/nginx
+      - ./nginx/proxyconf.d:/etc/nginx/conf.d
+#     - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx/rootdir:/usr/share/nginx/html
+    command: [ nginx-debug, '-g', 'daemon off;' ]
+
+  web1:
+    restart: always
+    image: nginx:latest
+    networks: 
+      - external_network
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/web1:/usr/share/nginx/html
+
+  web2:
+    restart: always
+    image: nginx:latest
+    networks: 
+      - external_network
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/web2:/usr/share/nginx/html
+
+  web3:
+    restart: always
+    image: nginx:latest
+    networks: 
+      - external_network
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/web3:/usr/share/nginx/html
+
+networks:
+  external_network:
+  internal_network:
+    internal: true
+
